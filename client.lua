@@ -44,24 +44,22 @@ function createBlipForEntity(entity, callSign)
     SetBlipColour(blip, 43)  -- Blip color
     SetBlipScale(blip, 1.25) -- Blip scale
     BeginTextCommandSetBlipName("STRING")
-    AddTextComponentString("Aircraft " .. callSign)
+    AddTextComponentString("Aircraft #" .. callSign)
     EndTextCommandSetBlipName(blip)
     return blip
 end
 
--- Generate a unique call sign for each aircraft type
-function generateCallSign(model)
-    if not aircraftModels[model] then
+-- Generate a unique call sign for each aircraft type using the license plate
+function generateCallSign(vehicle)
+    -- Get the vehicle's license plate
+    local plate = GetVehicleNumberPlateText(vehicle)
+
+    -- If no plate is found, return "Unknown"
+    if not plate or plate == "" then
         return "Unknown"
     end
 
-    if not callSignCounters[model] then
-        callSignCounters[model] = 1
-    else
-        callSignCounters[model] = callSignCounters[model] + 1
-    end
-
-    return aircraftModels[model] .. " #" .. callSignCounters[model]
+    return plate
 end
 
 -- Variable to track blip visibility
@@ -100,7 +98,7 @@ Citizen.CreateThread(function()
                     if model == GetHashKey(aircraftModel) then
                         if not aircraftBlips[vehicle] then
                             -- Generate a call sign and create a blip for the aircraft
-                            local callSign = generateCallSign(aircraftModel)
+                            local callSign = generateCallSign(vehicle)
                             local blip = createBlipForEntity(vehicle, callSign)
                             aircraftBlips[vehicle] = blip
                         end
@@ -125,6 +123,7 @@ Citizen.CreateThread(function()
         end
     end
 end)
+
 exports['qb-target']:AddBoxZone("ToggleAircraftBlips", vector3(444.00, -995.66, 35.98), 1.5, 1.5, {
     name = "ToggleAircraftBlips",
     heading = 0.0,
