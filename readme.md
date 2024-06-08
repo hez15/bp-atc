@@ -1,7 +1,6 @@
 Thanks for looking at this script i will be working on updates to add extra feature such as
 
 Nui so a ui opens up like a real terminal etc 
-Better callsign assigments 
 
 This is also job locked to police and ambulance
 all the items you might need to edit are in the client.lua 
